@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_bubbles_official_bot" default="compile.module.bubbles_official_bot">
+  <dirname property="module.bubbles_official_bot.basedir" file="${ant.file.module_bubbles_official_bot}"/>
+  
+  <property name="module.jdk.home.bubbles_official_bot" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.bubbles_official_bot" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.bubbles_official_bot" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.bubbles_official_bot" value="-encoding UTF-8 -source 1.5 -target 1.5 ${compiler.args}"/>
+  
+  <property name="bubbles_official_bot.output.dir" value="${module.bubbles_official_bot.basedir}/target/classes"/>
+  <property name="bubbles_official_bot.testoutput.dir" value="${module.bubbles_official_bot.basedir}/target/test-classes"/>
+  
+  <path id="bubbles_official_bot.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="bubbles_official_bot.module.production.classpath">
+    <path refid="${module.jdk.classpath.bubbles_official_bot}"/>
+    <pathelement location="${basedir}/../IRC Bot/out/artifacts/IRC_Bot_jar/IRC Bot.jar"/>
+    <pathelement location="${basedir}/../Documents/Libs/twitch-api-wrapper-0.3.jar"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.17.classpath"/>
+  </path>
+  
+  <path id="bubbles_official_bot.runtime.production.module.classpath">
+    <pathelement location="${bubbles_official_bot.output.dir}"/>
+    <pathelement location="${basedir}/../IRC Bot/out/artifacts/IRC_Bot_jar/IRC Bot.jar"/>
+    <pathelement location="${basedir}/../Documents/Libs/twitch-api-wrapper-0.3.jar"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.17.classpath"/>
+  </path>
+  
+  <path id="bubbles_official_bot.module.classpath">
+    <path refid="${module.jdk.classpath.bubbles_official_bot}"/>
+    <pathelement location="${bubbles_official_bot.output.dir}"/>
+    <pathelement location="${basedir}/../IRC Bot/out/artifacts/IRC_Bot_jar/IRC Bot.jar"/>
+    <pathelement location="${basedir}/../Documents/Libs/twitch-api-wrapper-0.3.jar"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.17.classpath"/>
+  </path>
+  
+  <path id="bubbles_official_bot.runtime.module.classpath">
+    <pathelement location="${bubbles_official_bot.testoutput.dir}"/>
+    <pathelement location="${bubbles_official_bot.output.dir}"/>
+    <pathelement location="${basedir}/../IRC Bot/out/artifacts/IRC_Bot_jar/IRC Bot.jar"/>
+    <pathelement location="${basedir}/../Documents/Libs/twitch-api-wrapper-0.3.jar"/>
+    <path refid="library.maven:_org.yaml:snakeyaml:1.17.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.bubbles_official_bot">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.bubbles_official_bot">
+    <patternset refid="excluded.from.module.bubbles_official_bot"/>
+  </patternset>
+  
+  <path id="bubbles_official_bot.module.sourcepath">
+    <dirset dir="${module.bubbles_official_bot.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="bubbles_official_bot.module.test.sourcepath">
+    <dirset dir="${module.bubbles_official_bot.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.bubbles_official_bot" depends="compile.module.bubbles_official_bot.production,compile.module.bubbles_official_bot.tests" description="Compile module Bubbles Official Bot"/>
+  
+  <target name="compile.module.bubbles_official_bot.production" depends="register.custom.compilers" description="Compile module Bubbles Official Bot; production classes">
+    <mkdir dir="${bubbles_official_bot.output.dir}"/>
+    <javac2 destdir="${bubbles_official_bot.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bubbles_official_bot}/javac">
+      <compilerarg line="${compiler.args.bubbles_official_bot}"/>
+      <bootclasspath refid="bubbles_official_bot.module.bootclasspath"/>
+      <classpath refid="bubbles_official_bot.module.production.classpath"/>
+      <src refid="bubbles_official_bot.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.bubbles_official_bot"/>
+    </javac2>
+    
+    <copy todir="${bubbles_official_bot.output.dir}">
+      <fileset dir="${module.bubbles_official_bot.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.bubbles_official_bot.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.bubbles_official_bot.tests" depends="register.custom.compilers,compile.module.bubbles_official_bot.production" description="compile module Bubbles Official Bot; test classes" unless="skip.tests">
+    <mkdir dir="${bubbles_official_bot.testoutput.dir}"/>
+    <javac2 destdir="${bubbles_official_bot.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bubbles_official_bot}/javac">
+      <compilerarg line="${compiler.args.bubbles_official_bot}"/>
+      <bootclasspath refid="bubbles_official_bot.module.bootclasspath"/>
+      <classpath refid="bubbles_official_bot.module.classpath"/>
+      <src refid="bubbles_official_bot.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.bubbles_official_bot"/>
+    </javac2>
+    
+    <copy todir="${bubbles_official_bot.testoutput.dir}">
+      <fileset dir="${module.bubbles_official_bot.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.bubbles_official_bot" description="cleanup module">
+    <delete dir="${bubbles_official_bot.output.dir}"/>
+    <delete dir="${bubbles_official_bot.testoutput.dir}"/>
+  </target>
+</project>
