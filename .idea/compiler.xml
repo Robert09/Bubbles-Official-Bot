@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Bubbles Official Bot" />
+        <module name="BubblesBot" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Bubbles Official Bot" target="1.8" />
+      <module name="BubblesBot" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

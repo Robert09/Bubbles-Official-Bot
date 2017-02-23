@@ -3,31 +3,43 @@ package me.robert.bob.command.commands;
 import me.robert.bob.Launch;
 import me.robert.bob.command.Command;
 import me.robert.bob.command.CommandInfo;
+import me.robert.bob.command.CustomCommand;
+import me.robert.bob.files.PlayerFile;
+import me.robert.bob.files.PlayerFileManager;
+import me.robert.irc.User;
 
 /**
- * Created by O3Bubbles09 on 2/11/2017
+ * Created by O3Bubbles09 on 2/7/2017
  **/
-@CommandInfo(description = "Add a custom command for your bot.", usage = "!addcom <commandName> <needsMod> <response>", aliases = {"ac", "addcom"})
+@CommandInfo(description = "Add a custom command for the bot.", usage = "!addCom", needsMod = true, aliases = {"addCom", "ac"})
 public class AddCommand extends Command {
 
     @Override
     public void onCommand(String sender, String channel, String command, String... args) {
-        CommandInfo info = this.getClass().getAnnotation(CommandInfo.class);
-        if (args.length <= 2) {
+        User user = Launch.getInstance().getBot().getChannel().getUser(sender);
 
-            Launch.getInstance().getBot().getChannelManager().getChannel(channel.substring(1)).messageChannel(info.usage());
+        if (!user.isMod()) {
             return;
         }
 
-        String commandName = args[0];
-        boolean needsMod = Boolean.parseBoolean(args[1]);
-        String response = "";
-
-        for (int i = 2; i < args.length; i++) {
-            response += args[i] + " ";
+        if (args.length <= 4) {
+            Launch.getInstance().getBot().getChannel().messageChannel("Usage: !addCom <name> <needsMod> <cost> <response>");
+            return;
         }
 
-        Launch.getInstance().getBot().getCommandManager().addCommand(commandName, needsMod, response);
-        Launch.getInstance().getBot().getChannelManager().getChannel(channel.substring(1)).messageChannel("Successfully add the command: " + commandName + " " + needsMod + " " + response);
+        String cmd = args[1];
+
+        boolean needsMod = Boolean.parseBoolean(args[2]);
+
+        int cost = Integer.parseInt(args[3]);
+
+        String response = "";
+
+        for (int i = 4; i < args.length; i++) {
+            response += " " + args[i];
+        }
+
+        Launch.getInstance().getBot().getCommandManager().addCustomCommand(new CustomCommand(cmd, needsMod, cost, response.substring(1)));
+        Launch.getInstance().getBot().getChannel().messageChannel("You add the command: " + cmd + " to the bot.");
     }
 }

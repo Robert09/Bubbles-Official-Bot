@@ -2,44 +2,58 @@ package me.robert.bob.command;
 
 import me.robert.bob.Launch;
 import me.robert.bob.files.CommandFile;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by O3Bubbles09 on 2/11/2017
+ * Created by O3Bubbles09 on 2/20/2017
  **/
 public class CustomCommand {
 
     private String name;
     private String response;
+
     private boolean needsMod;
 
-    public CommandFile commandFile;
+    private int cost;
 
-    public CustomCommand(String name, String response, boolean needsMod) {
+    private File file;
+    private File dir;
+    private DumperOptions dumperOptions;
+    private Yaml yaml;
+
+    private Map<String, Object> config;
+
+    public CustomCommand(String name, boolean needsMod, int cost, String response) {
         this.name = name;
         this.response = response;
+
         this.needsMod = needsMod;
 
-        this.commandFile = new CommandFile(name + ".yaml");
-        commandFile.set("commandName", name);
-        commandFile.set("response", response);
-        commandFile.set("needsMod", needsMod);
-    }
+        this.cost = cost;
 
-    public CustomCommand(String name, String response) {
-        this(name, response, false);
+        CommandFile temp = new CommandFile(name, needsMod, cost, response);
     }
 
     public CustomCommand(File file) {
-        commandFile = new CommandFile(file);
-        this.name = (String) commandFile.get("commandName");
-        this.response = (String) commandFile.get("response");
-        this.needsMod = (boolean) commandFile.get("needsMod");
+        CommandFile temp = new CommandFile(file);
+
+        this.name = temp.getString("name");
+        this.response = temp.getString("response");
+
+        this.needsMod = temp.getBoolean("needsMod");
+
+        this.cost = temp.getInt("cost");
     }
 
-    public void onCommand(String sender, String channel, String command, String... args) {
-        Launch.getInstance().getBot().getChannelManager().getChannel(channel.substring(1)).messageChannel(response);
+    public void onCommand(String sender, boolean isMod, String channel, String command, String... args) {
+        Launch.getInstance().getBot().getChannel().messageChannel(this.response);
     }
 
     public String getName() {
@@ -52,5 +66,9 @@ public class CustomCommand {
 
     public boolean needsMod() {
         return this.needsMod;
+    }
+
+    public int getCost() {
+        return this.cost;
     }
 }

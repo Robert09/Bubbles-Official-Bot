@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="IRC Connector">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../IRC Connector/out/artifacts/IRC_Connector_jar/IRC Connector.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

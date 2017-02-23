@@ -1,55 +1,43 @@
 package me.robert.bob.ui;
 
-import com.google.gson.JsonParser;
-import me.robert.bob.BubblesOfficialBot;
-import me.robert.bob.files.Configuration;
-import me.robert.bob.ui.tabs.TabChat;
-import me.robert.bob.ui.tabs.TabChatTab;
-import me.robert.bob.utils.HTTPRequest;
+import me.robert.bob.Bot;
+import me.robert.bob.Launch;
 import org.jvnet.substance.skin.SubstanceMagmaLookAndFeel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by O3Bubbles09 on 1/29/2017
+ * Created by O3Bubbles09 on 2/14/2017
  **/
 public class Window {
 
     private JFrame jFrame;
     private SpringLayout springLayout;
-    private JTabbedPane tabbedPane;
 
     private JMenuBar menuBar;
-    // Settings
     private JMenu settings;
-    private JMenuItem chatTimeStamps;
-    private JMenuItem openConfig;
+    private JMenuItem toggleConsole;
+    private JMenuItem joinChannel;
+    private JMenuItem partChannel;
 
-    // Chat
-    private JMenu chat;
-    private JMenuItem chatJoin;
-    private JMenuItem chatPart;
-    private JMenuItem chatClear;
+    private final int WIDTH = 720;
+    private final int HEIGHT = WIDTH / 16 * 9;
+    private Dimension size = new Dimension(WIDTH, HEIGHT);
 
-    private BubblesOfficialBot bot;
+    private Console console;
+    private ChatPage chatPage;
 
-    private JsonParser jsonParser;
-
-    /**
-     * TABS
-     **/
-    private TabChatTab chatTab;
-
-    private Dimension size = new Dimension(1280, 720);
-
-    public Window(BubblesOfficialBot bot) {
-        this.bot = bot;
-
-        this.jFrame = new JFrame("Bubbles Official Bot");
-        this.jFrame.setDefaultLookAndFeelDecorated(true);
+    public Window() {
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        this.jFrame = new JFrame("Bubble's Bot");
         this.springLayout = new SpringLayout();
+
+        this.jFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/me.robert.bob.ui/logo.png")));
 
         this.jFrame.getContentPane().setLayout(this.springLayout);
         this.jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,7 +49,8 @@ public class Window {
     }
 
     private void initialize() {
-        this.jsonParser = new JsonParser();
+        this.console = new Console();
+        this.chatPage = new ChatPage();
 
         /** Main Tab **/
 
@@ -69,74 +58,41 @@ public class Window {
         // Settings
         this.settings = new JMenu("Settings");
 
-        this.chatTimeStamps = new JMenuItem("Toggle timestamps for chat.");
-        this.chatTimeStamps.addActionListener(e -> {
-            if (e.getActionCommand().equalsIgnoreCase("Toggle timestamps for chat."))
-                Configuration.getConfiguration().set("chatTimestampsEnabled", !Configuration.getConfiguration().getBoolean("chatTimestampsEnabled"));
-        });
-
-        this.openConfig = new JMenuItem("Open the config file for the bot.");
-        this.openConfig.addActionListener(e -> {
-            if (e.getActionCommand().equalsIgnoreCase("Open the config file for the bot.")) {
-                try {
-                    Desktop.getDesktop().open(Configuration.getConfiguration().getFile());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        this.toggleConsole = new JMenuItem("Toggle console.");
+        this.toggleConsole.addActionListener(e -> {
+            if (e.getActionCommand().equalsIgnoreCase("Toggle console.")) {
+                this.console.toggleVisible();
             }
         });
+        this.settings.add(this.toggleConsole);
 
-        this.settings.add(this.chatTimeStamps);
-        this.settings.add(this.openConfig);
-        this.menuBar.add(settings);
-
-        // Chat
-        this.chat = new JMenu("Chat");
-        this.chatJoin = new JMenuItem("Join a channel.");
-        this.chatJoin.addActionListener(e -> {
-            if (e.getActionCommand().equalsIgnoreCase("Join a channel.")) {
-                String channel = JOptionPane.showInputDialog(null, "What channel would you like to join?", "o3bubbles09");
-                getChatTab().addChannel(channel, new TabChat(
-                        this.bot.getChannelManager().addChannel(channel)));
-                HTTPRequest.startUptime(channel);
+        this.joinChannel = new JMenuItem("Join channel.");
+        this.joinChannel.addActionListener(e -> {
+            if (e.getActionCommand().equalsIgnoreCase("Join channel.")) {
+                String channel = JOptionPane.showInputDialog("What channel would you like to join?");
+                if (!channel.isEmpty())
+                    this.chatPage.joinChannel(channel);
             }
         });
-        this.chat.add(this.chatJoin);
+        this.settings.add(this.joinChannel);
+//
+//        this.partChannel = new JMenuItem("Part channel.");
+//        this.partChannel.addActionListener(e -> {
+//            if (e.getActionCommand().equalsIgnoreCase("Part channel.")) {
+//                this.chatPage.partChannel();
+//            }
+//        });
+//        this.settings.add(this.partChannel);
 
-        this.chatPart = new JMenuItem("Part a channel.");
-        this.chatPart.addActionListener(e -> {
-            if (e.getActionCommand().equalsIgnoreCase("Part a channel.")) {
-                TabChat temp = (TabChat) getChatTab().getTabbedPane().getSelectedComponent();
-                getChatTab().removeChannel(temp.getChannelName());
-            }
-        });
-        this.chat.add(this.chatPart);
-
-        this.menuBar.add(this.chat);
-
-        this.chatClear = new JMenuItem("Clear chat.");
-        this.chatClear.addActionListener(e -> {
-            if (e.getActionCommand().equalsIgnoreCase("Clear chat.")) {
-                TabChat temp = (TabChat) getChatTab().getTabbedPane().getSelectedComponent();
-                bot.getChannelManager().getChannel(temp.getChannelName()).messageChannel("/clear");
-            }
-        });
-        this.chat.add(this.chatClear);
-
+        this.menuBar.add(this.settings);
         this.jFrame.getContentPane().add(menuBar);
 
-        this.tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        this.springLayout.putConstraint(SpringLayout.NORTH, this.tabbedPane, 10, SpringLayout.SOUTH, this.menuBar);
-        this.springLayout.putConstraint(SpringLayout.EAST, this.tabbedPane, -10, SpringLayout.EAST, this.jFrame.getContentPane());
-        this.springLayout.putConstraint(SpringLayout.SOUTH, this.tabbedPane, -10, SpringLayout.SOUTH, this.jFrame.getContentPane());
-        this.springLayout.putConstraint(SpringLayout.WEST, this.tabbedPane, 10, SpringLayout.WEST, this.jFrame.getContentPane());
-        this.jFrame.getContentPane().add(tabbedPane);
-        /** Main Tab **/
+        this.springLayout.putConstraint(SpringLayout.NORTH, this.chatPage, 10, SpringLayout.SOUTH, this.menuBar);
+        this.springLayout.putConstraint(SpringLayout.EAST, this.chatPage, -10, SpringLayout.EAST, this.jFrame.getContentPane());
+        this.springLayout.putConstraint(SpringLayout.SOUTH, this.chatPage, -10, SpringLayout.SOUTH, this.jFrame.getContentPane());
+        this.springLayout.putConstraint(SpringLayout.WEST, this.chatPage, 10, SpringLayout.WEST, this.jFrame.getContentPane());
 
-        /** Chat Tab **/
-        this.chatTab = new TabChatTab(this.bot);
-        this.tabbedPane.addTab("Chat", this.chatTab);
-        /** Chat Tab **/
+        this.jFrame.getContentPane().add(this.chatPage);
 
         SwingUtilities.invokeLater(() -> {
             try {
@@ -149,7 +105,11 @@ public class Window {
         });
     }
 
-    public TabChatTab getChatTab() {
-        return this.chatTab;
+    public Console getConsole() {
+        return this.console;
+    }
+
+    public ChatPage getChatPage() {
+        return this.chatPage;
     }
 }
