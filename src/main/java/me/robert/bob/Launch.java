@@ -11,7 +11,7 @@ public class Launch {
 
     private Window window;
 
-    public static final String USER = "o3bubbles09";
+    public static final String USER = "bubblesofficialbot";
 
     private Launch() {
         this.window = new Window();

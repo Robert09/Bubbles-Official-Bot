@@ -11,8 +11,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -28,19 +27,18 @@ public class ChatPage extends JPanel {
     private JTextField textField;
 
     private JScrollPane viewerPane;
-    private JTextPane viewerTextArea;
+    private JPanel viewerPanel;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
     private Date date = new Date();
 
     private StyledDocument document;
-    private StyledDocument viewerDoc;
 
     private Style color;
-    private Style viewerCol;
-    private Style baseCol;
 
     private Color orange = new Color(255, 69, 0);
+
+    private JLabel[] viewers;
 
     public ChatPage() {
         this.springLayout = new SpringLayout();
@@ -52,8 +50,8 @@ public class ChatPage extends JPanel {
         this.textField.addFocusListener(new FocusListener());
 
         this.viewerPane = new JScrollPane();
-        this.viewerTextArea = new JTextPane();
-        this.viewerTextArea.setEditable(false);
+        this.viewerPanel = new JPanel();
+        this.viewerPanel.setLayout(new BoxLayout(this.viewerPanel, BoxLayout.Y_AXIS));
 
         this.setLayout(this.springLayout);
 
@@ -73,19 +71,9 @@ public class ChatPage extends JPanel {
 
         this.textPane.setEditable(false);
 
-        this.viewerDoc = this.viewerTextArea.getStyledDocument();
-        this.viewerCol = this.viewerTextArea.addStyle("UserCol", null);
-        this.baseCol = this.viewerTextArea.addStyle("BaseCol", null);
-        StyleConstants.setForeground(this.viewerCol, orange);
-        StyleConstants.setForeground(this.baseCol, orange);
-        StyleConstants.setBold(this.viewerCol, true);
-        StyleConstants.setBold(this.baseCol, true);
-
         this.document = this.textPane.getStyledDocument();
         this.color = this.textPane.addStyle("Color", null);
         StyleConstants.setForeground(this.color, Color.red);
-
-        this.viewerPane.setViewportView(this.viewerTextArea);
 
         this.scrollPane.setViewportView(this.textPane);
 
@@ -109,6 +97,8 @@ public class ChatPage extends JPanel {
             }
         });
 
+        this.viewerPane.setViewportView(this.viewerPanel);
+
         this.add(this.textField);
         this.add(this.viewerPane);
         this.add(this.scrollPane);
@@ -119,6 +109,10 @@ public class ChatPage extends JPanel {
         Launch.getInstance().getBot().setSettingsFile(new SettingsFile("settings.yaml"));
     }
 
+    public void partChannel() {
+        Launch.getInstance().getBot().getChannel().part();
+    }
+
     public void messageChannel() {
         String message = this.textField.getText();
         this.textField.setText("");
@@ -126,23 +120,57 @@ public class ChatPage extends JPanel {
         Launch.getInstance().getBot().getChannel().messageChannel(message);
     }
 
-    public void updateViewers(List<User> users) {
-        this.viewerTextArea.setText("");
+    public void updateViewers(LinkedList<User> users) {
+        this.viewers = new JLabel[Launch.getInstance().getBot().getChannel().getUsers().size()];
 
-        for (User user : users) {
-            StyleConstants.setForeground(this.viewerCol, user.getColor());
-
-            try {
-                if (user.isMod())
-                    this.viewerDoc.insertString(this.viewerDoc.getLength(), "[MOD] \r", this.baseCol);
-                this.viewerDoc.insertString(this.viewerDoc.getLength(), String.format("%s\r\n", user.getName()), this.viewerCol);
-
-            } catch (BadLocationException e) {
-                e.printStackTrace();
-            }
+        for (Component component : this.viewerPanel.getComponents()) {
+            this.viewerPanel.remove(component);
         }
 
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
+                for (int i = 0; i < Launch.getInstance().getBot().getChannel().getUsers().size(); i++) {
+                    User user = users.get(i);
+
+                    JLabel temp = new JLabel("");
+                    if (user.isMod()) {
+                        temp.setForeground(user.getColor());
+                        temp.setText("[MOD] " + user.getName());
+                        viewers[i] = temp;
+                        viewerPanel.add(viewers[i]);
+                    } else {
+                        temp.setForeground(user.getColor());
+                        temp.setText(user.getName());
+                        viewers[i] = temp;
+                        viewerPanel.add(viewers[i]);
+                    }
+
+                    viewers[i].addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            onMouseClicked(e);
+                        }
+                    });
+
+                    viewerPanel.validate();
+                    viewerPanel.repaint();
+                }
+
+            }
+        });
+
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
+    }
+
+    private void onMouseClicked(MouseEvent e) {
+        for (int i = 0; i < this.viewers.length; i++) {
+            if (e.getSource() == this.viewers[i]) {
+                System.out.println(this.viewers[i].getText() + " was pressed!");
+                this.textField.setText(this.textField.getText() + " " + this.viewers[i].getText());
+            }
+        }
     }
 
     public void appendChat(String sender, Color c, String message) {

@@ -1,15 +1,9 @@
 package me.robert.bob.ui;
 
-import me.robert.bob.Bot;
-import me.robert.bob.Launch;
 import org.jvnet.substance.skin.SubstanceMagmaLookAndFeel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by O3Bubbles09 on 2/14/2017
@@ -52,8 +46,6 @@ public class Window {
         this.console = new Console();
         this.chatPage = new ChatPage();
 
-        /** Main Tab **/
-
         this.menuBar = new JMenuBar();
         // Settings
         this.settings = new JMenu("Settings");
@@ -75,14 +67,14 @@ public class Window {
             }
         });
         this.settings.add(this.joinChannel);
-//
-//        this.partChannel = new JMenuItem("Part channel.");
-//        this.partChannel.addActionListener(e -> {
-//            if (e.getActionCommand().equalsIgnoreCase("Part channel.")) {
-//                this.chatPage.partChannel();
-//            }
-//        });
-//        this.settings.add(this.partChannel);
+
+        this.partChannel = new JMenuItem("Part channel.");
+        this.partChannel.addActionListener(e -> {
+            if (e.getActionCommand().equalsIgnoreCase("Part channel.")) {
+                this.chatPage.partChannel();
+            }
+        });
+        this.settings.add(this.partChannel);
 
         this.menuBar.add(this.settings);
         this.jFrame.getContentPane().add(menuBar);
