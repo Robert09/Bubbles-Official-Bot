@@ -13,8 +13,6 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +28,7 @@ public class ChatPage extends JPanel {
     private JTextField textField;
 
     private JScrollPane viewerPane;
-    private JPanel viewerPanel;
+    private ViewerPanel viewerPanel;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
     private Date date = new Date();
@@ -40,8 +38,6 @@ public class ChatPage extends JPanel {
     private Style color;
 
     private Color orange = new Color(255, 69, 0);
-
-    private JLabel[] viewers;
 
     ChatPage() {
         this.springLayout = new SpringLayout();
@@ -53,8 +49,7 @@ public class ChatPage extends JPanel {
         this.textField.addFocusListener(new FocusListener());
 
         this.viewerPane = new JScrollPane();
-        this.viewerPanel = new JPanel();
-        this.viewerPanel.setLayout(new BoxLayout(this.viewerPanel, BoxLayout.Y_AXIS));
+        this.viewerPanel = new ViewerPanel();
 
         this.setLayout(this.springLayout);
 
@@ -124,82 +119,8 @@ public class ChatPage extends JPanel {
     }
 
     public void updateViewers(List<User> users) {
-        this.viewers = new JLabel[Launch.getInstance().getBot().getChannel().getUsers().size()];
-
-        for (Component component : this.viewerPanel.getComponents()) {
-            this.viewerPanel.remove(component);
-        }
-
-        SwingUtilities.invokeLater(() -> {
-
-            for (int i = 0; i < Launch.getInstance().getBot().getChannel().getUsers().size(); i++) {
-                User user = users.get(i);
-
-                JLabel temp = new JLabel("");
-                if (user.isMod()) {
-                    temp.setForeground(user.getColor());
-                    temp.setText("[MOD] " + user.getName());
-                    viewers[i] = temp;
-                    viewerPanel.add(viewers[i]);
-                } else {
-                    temp.setForeground(user.getColor());
-                    temp.setText(user.getName());
-                    viewers[i] = temp;
-                    viewerPanel.add(viewers[i]);
-                }
-
-                viewers[i].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        onMouseClicked(e);
-                    }
-                });
-
-                viewerPanel.validate();
-                viewerPanel.repaint();
-            }
-
-        });
-
+        this.viewerPanel.updateViewers(users);
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
-    }
-
-    private String[] commands = new String[]{"", "Ban", "Un-Ban", "Timeout", "Un-Timeout"};
-
-    private void onMouseClicked(MouseEvent e) {
-        for (JLabel viewer : this.viewers) {
-            if (e.getSource() == viewer) {
-
-                String selectedCmd = (String) JOptionPane.showInputDialog(this,
-                        "What action would you like to perform on this user?",
-                        "Action to perform",
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        commands,
-                        commands[0]);
-
-                switch (selectedCmd) {
-                    case "":
-                        break;
-                    case "Ban":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/ban " + viewer
-                                .getText());
-                        break;
-                    case "Un-Ban":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/unban " + viewer
-                                .getText());
-                        break;
-                    case "Timeout":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/timeout " + viewer
-                                .getText());
-                        break;
-                    case "Un-Timeout":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/untimeout " + viewer
-                                .getText());
-                        break;
-                }
-            }
-        }
     }
 
     public void appendChat(String sender, Color c, String message) {
