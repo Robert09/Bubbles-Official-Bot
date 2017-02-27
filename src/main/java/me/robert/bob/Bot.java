@@ -13,8 +13,6 @@ import java.awt.*;
  **/
 public class Bot extends Connection {
 
-    private BotTimer timer;
-
     private CommandManager commandManager;
 
     private SettingsFile settingsFile;
@@ -25,7 +23,7 @@ public class Bot extends Connection {
         PlayerFileManager.getInstance().loadPlayerFiles(channel);
 
         commandManager = new CommandManager(channel);
-        timer = new BotTimer(1, this);
+        new BotTimer(1);
 
         if (this.getChannel() == null) System.out.println("The channel is null!");
 

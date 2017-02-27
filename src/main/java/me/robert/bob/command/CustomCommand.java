@@ -35,7 +35,7 @@ public class CustomCommand {
 
         this.cost = cost;
 
-        CommandFile temp = new CommandFile(name, needsMod, cost, response);
+        new CommandFile(name, needsMod, cost, response);
     }
 
     CustomCommand(File file) {

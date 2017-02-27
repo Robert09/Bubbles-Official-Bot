@@ -11,12 +11,6 @@ import java.awt.*;
 public class Console {
 
     private JFrame frame;
-    private SpringLayout layout;
-
-    private int width = 720;
-    private int height = width / 16 * 9;
-
-    private Dimension size = new Dimension(width, height);
 
     private JScrollPane scrollPane;
     private JTextArea textArea;
@@ -26,9 +20,12 @@ public class Console {
 
         this.frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/me.robert.bob.ui/logo.png")));
 
-        this.layout = new SpringLayout();
+        SpringLayout layout = new SpringLayout();
 
         this.frame.getContentPane().setLayout(layout);
+        int width = 720;
+        int height = width / 16 * 9;
+        Dimension size = new Dimension(width, height);
         this.frame.getContentPane().setPreferredSize(size);
         this.frame.pack();
 
@@ -41,10 +38,10 @@ public class Console {
 
         this.scrollPane.setViewportView(this.textArea);
 
-        this.layout.putConstraint(SpringLayout.NORTH, this.scrollPane, 10, SpringLayout.NORTH, this.frame.getContentPane());
-        this.layout.putConstraint(SpringLayout.EAST, this.scrollPane, -10, SpringLayout.EAST, this.frame.getContentPane());
-        this.layout.putConstraint(SpringLayout.SOUTH, this.scrollPane, -10, SpringLayout.SOUTH, this.frame.getContentPane());
-        this.layout.putConstraint(SpringLayout.WEST, this.scrollPane, 10, SpringLayout.WEST, this.frame.getContentPane());
+        layout.putConstraint(SpringLayout.NORTH, this.scrollPane, 10, SpringLayout.NORTH, this.frame.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, this.scrollPane, -10, SpringLayout.EAST, this.frame.getContentPane());
+        layout.putConstraint(SpringLayout.SOUTH, this.scrollPane, -10, SpringLayout.SOUTH, this.frame.getContentPane());
+        layout.putConstraint(SpringLayout.WEST, this.scrollPane, 10, SpringLayout.WEST, this.frame.getContentPane());
 
         this.frame.getContentPane().add(this.scrollPane);
 

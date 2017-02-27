@@ -10,7 +10,7 @@ import me.robert.irc.User;
 /**
  * Created by O3Bubbles09 on 2/7/2017
  **/
-@CommandInfo(description = "Check how many points you have.", usage = "!points", needsMod = false, aliases = {"points"})
+@CommandInfo(description = "Check how many points you have.", usage = "!points", aliases = {"points"})
 public class Points extends Command {
 
     @Override
@@ -62,7 +62,6 @@ public class Points extends Command {
             Launch.getInstance().getBot().getChannel().messageChannel(String.format("Successfully set %s's points to " +
                             "%s",
                     username, amount));
-            return;
         }
     }
 }

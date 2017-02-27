@@ -32,7 +32,7 @@ public class Launch {
         return this.bot;
     }
 
-    public Window getWindow() {
+    Window getWindow() {
         return this.window;
     }
 

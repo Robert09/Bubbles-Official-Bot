@@ -27,7 +27,6 @@ public class CommandManager {
     private void init() {
         this.commands = new ArrayList<>();
 
-        // TODO: Add commands below here.
         commands.add(new AddCommand());
         commands.add(new Points());
 
@@ -39,15 +38,15 @@ public class CommandManager {
 
         File dir = new File(System.getProperty("user.home") + File.separator + "Local Settings" + File.separator + "Application Data" + File.separator + "BubblesBot" + File.separator + channel + File.separator + "commands");
         if (!dir.exists()) {
-            dir.mkdirs();
+            if (dir.mkdirs()) {
+                System.out.println("DIRS created");
+            }
         }
 
-        if (dir.listFiles().length == 0)
+        if (dir.listFiles() == null)
             return;
 
-        for (File file : dir.listFiles()) {
-            this.customCommands.add(new CustomCommand(file));
-        }
+        for (File file : dir.listFiles()) this.customCommands.add(new CustomCommand(file));
     }
 
     public void addCustomCommand(CustomCommand command) {

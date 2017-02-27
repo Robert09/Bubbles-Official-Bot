@@ -7,11 +7,11 @@ import java.io.File;
  **/
 public class PlayerFile extends SettingsFile {
 
-    public PlayerFile(String playerName) {
+    PlayerFile(String playerName) {
         super("players", String.format("%s.yaml", playerName));
     }
 
-    public PlayerFile(File file) {
+    PlayerFile(File file) {
         super(file);
     }
 }

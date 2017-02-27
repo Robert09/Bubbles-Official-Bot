@@ -22,12 +22,9 @@ import java.util.List;
  **/
 public class ChatPage extends JPanel {
 
-    private SpringLayout springLayout;
     private JScrollPane scrollPane;
-    private JTextPane textPane;
     private JTextField textField;
 
-    private JScrollPane viewerPane;
     private ViewerPanel viewerPanel;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
@@ -37,43 +34,42 @@ public class ChatPage extends JPanel {
 
     private Style color;
 
-    private Color orange = new Color(255, 69, 0);
-
     ChatPage() {
-        this.springLayout = new SpringLayout();
+        SpringLayout springLayout = new SpringLayout();
         this.scrollPane = new JScrollPane();
-        this.textPane = new JTextPane();
+        JTextPane textPane = new JTextPane();
         this.textField = new JTextField();
+        Color orange = new Color(255, 69, 0);
         this.textField.setForeground(orange);
         this.textField.setText("Enter a message to send.");
         this.textField.addFocusListener(new FocusListener());
 
-        this.viewerPane = new JScrollPane();
+        JScrollPane viewerPane = new JScrollPane();
         this.viewerPanel = new ViewerPanel();
 
-        this.setLayout(this.springLayout);
+        this.setLayout(springLayout);
 
-        this.springLayout.putConstraint(SpringLayout.EAST, this.textField, -10, SpringLayout.EAST, this);
-        this.springLayout.putConstraint(SpringLayout.SOUTH, this.textField, -10, SpringLayout.SOUTH, this);
-        this.springLayout.putConstraint(SpringLayout.WEST, this.textField, 10, SpringLayout.WEST, this);
+        springLayout.putConstraint(SpringLayout.EAST, this.textField, -10, SpringLayout.EAST, this);
+        springLayout.putConstraint(SpringLayout.SOUTH, this.textField, -10, SpringLayout.SOUTH, this);
+        springLayout.putConstraint(SpringLayout.WEST, this.textField, 10, SpringLayout.WEST, this);
 
-        this.springLayout.putConstraint(SpringLayout.NORTH, this.viewerPane, 10, SpringLayout.NORTH, this);
-        this.springLayout.putConstraint(SpringLayout.EAST, this.viewerPane, -10, SpringLayout.EAST, this);
-        this.springLayout.putConstraint(SpringLayout.SOUTH, this.viewerPane, -10, SpringLayout.NORTH, this.textField);
-        this.springLayout.putConstraint(SpringLayout.WEST, this.viewerPane, -200, SpringLayout.EAST, this);
+        springLayout.putConstraint(SpringLayout.NORTH, viewerPane, 10, SpringLayout.NORTH, this);
+        springLayout.putConstraint(SpringLayout.EAST, viewerPane, -10, SpringLayout.EAST, this);
+        springLayout.putConstraint(SpringLayout.SOUTH, viewerPane, -10, SpringLayout.NORTH, this.textField);
+        springLayout.putConstraint(SpringLayout.WEST, viewerPane, -200, SpringLayout.EAST, this);
 
-        this.springLayout.putConstraint(SpringLayout.NORTH, this.scrollPane, 10, SpringLayout.NORTH, this);
-        this.springLayout.putConstraint(SpringLayout.EAST, this.scrollPane, -10, SpringLayout.WEST, this.viewerPane);
-        this.springLayout.putConstraint(SpringLayout.SOUTH, this.scrollPane, -10, SpringLayout.NORTH, this.textField);
-        this.springLayout.putConstraint(SpringLayout.WEST, this.scrollPane, 10, SpringLayout.WEST, this);
+        springLayout.putConstraint(SpringLayout.NORTH, this.scrollPane, 10, SpringLayout.NORTH, this);
+        springLayout.putConstraint(SpringLayout.EAST, this.scrollPane, -10, SpringLayout.WEST, viewerPane);
+        springLayout.putConstraint(SpringLayout.SOUTH, this.scrollPane, -10, SpringLayout.NORTH, this.textField);
+        springLayout.putConstraint(SpringLayout.WEST, this.scrollPane, 10, SpringLayout.WEST, this);
 
-        this.textPane.setEditable(false);
+        textPane.setEditable(false);
 
-        this.document = this.textPane.getStyledDocument();
-        this.color = this.textPane.addStyle("Color", null);
+        this.document = textPane.getStyledDocument();
+        this.color = textPane.addStyle("Color", null);
         StyleConstants.setForeground(this.color, Color.red);
 
-        this.scrollPane.setViewportView(this.textPane);
+        this.scrollPane.setViewportView(textPane);
 
         this.textField.requestFocus();
 
@@ -95,10 +91,10 @@ public class ChatPage extends JPanel {
             }
         });
 
-        this.viewerPane.setViewportView(this.viewerPanel);
+        viewerPane.setViewportView(this.viewerPanel);
 
         this.add(this.textField);
-        this.add(this.viewerPane);
+        this.add(viewerPane);
         this.add(this.scrollPane);
     }
 

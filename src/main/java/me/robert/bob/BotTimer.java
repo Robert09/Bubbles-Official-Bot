@@ -11,13 +11,11 @@ import java.util.TimerTask;
  **/
 public class BotTimer extends TimerTask {
 
-    private Timer timer;
-
-    BotTimer(int delay, Bot bot) {
+    BotTimer(int delay) {
         int timeTime = delay * 60 * 1000;
 
-        this.timer = new Timer("Bot Timer");
-        this.timer.scheduleAtFixedRate(this, timeTime, timeTime);
+        Timer timer = new Timer("Bot Timer");
+        timer.scheduleAtFixedRate(this, timeTime, timeTime);
     }
 
     @Override

@@ -8,22 +8,21 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
  * Created by O3Bubbles09 on 2/27/2017
  **/
-public class ViewerPanel extends JPanel {
+class ViewerPanel extends JPanel {
 
     private List<JLabel> viewers;
 
-    public ViewerPanel() {
+    ViewerPanel() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
-    public void updateViewers(List<User> users) {
+    void updateViewers(List<User> users) {
         this.viewers = new ArrayList<>();
 
         for (Component component : this.getComponents()) {
@@ -56,7 +55,7 @@ public class ViewerPanel extends JPanel {
             }
 
             if (viewers.size() > 0) {
-                Collections.sort(viewers, Comparator.comparing(JLabel::getText));
+                viewers.sort(Comparator.comparing(JLabel::getText));
             }
 
             for (JLabel label : viewers) {

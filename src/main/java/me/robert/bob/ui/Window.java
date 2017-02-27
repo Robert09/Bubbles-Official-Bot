@@ -13,16 +13,6 @@ public class Window {
     private JFrame jFrame;
     private SpringLayout springLayout;
 
-    private JMenuBar menuBar;
-    private JMenu settings;
-    private JMenuItem toggleConsole;
-    private JMenuItem joinChannel;
-    private JMenuItem partChannel;
-
-    private final int WIDTH = 720;
-    private final int HEIGHT = WIDTH / 16 * 9;
-    private Dimension size = new Dimension(WIDTH, HEIGHT);
-
     private Console console;
     private ChatPage chatPage;
 
@@ -35,6 +25,9 @@ public class Window {
 
         this.jFrame.getContentPane().setLayout(this.springLayout);
         this.jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        int WIDTH = 720;
+        int HEIGHT = WIDTH / 16 * 9;
+        Dimension size = new Dimension(WIDTH, HEIGHT);
         this.jFrame.setMinimumSize(size);
         this.jFrame.setLocationRelativeTo(null);
         this.jFrame.pack();
@@ -46,40 +39,40 @@ public class Window {
         this.console = new Console();
         this.chatPage = new ChatPage();
 
-        this.menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
         // Settings
-        this.settings = new JMenu("Settings");
+        JMenu settings = new JMenu("Settings");
 
-        this.toggleConsole = new JMenuItem("Toggle console.");
-        this.toggleConsole.addActionListener(e -> {
+        JMenuItem toggleConsole = new JMenuItem("Toggle console.");
+        toggleConsole.addActionListener(e -> {
             if (e.getActionCommand().equalsIgnoreCase("Toggle console.")) {
                 this.console.toggleVisible();
             }
         });
-        this.settings.add(this.toggleConsole);
+        settings.add(toggleConsole);
 
-        this.joinChannel = new JMenuItem("Join channel.");
-        this.joinChannel.addActionListener(e -> {
+        JMenuItem joinChannel = new JMenuItem("Join channel.");
+        joinChannel.addActionListener(e -> {
             if (e.getActionCommand().equalsIgnoreCase("Join channel.")) {
                 String channel = JOptionPane.showInputDialog("What channel would you like to join?");
                 if (!channel.isEmpty())
                     this.chatPage.joinChannel(channel);
             }
         });
-        this.settings.add(this.joinChannel);
+        settings.add(joinChannel);
 
-        this.partChannel = new JMenuItem("Part channel.");
-        this.partChannel.addActionListener(e -> {
+        JMenuItem partChannel = new JMenuItem("Part channel.");
+        partChannel.addActionListener(e -> {
             if (e.getActionCommand().equalsIgnoreCase("Part channel.")) {
                 this.chatPage.partChannel();
             }
         });
-        this.settings.add(this.partChannel);
+        settings.add(partChannel);
 
-        this.menuBar.add(this.settings);
+        menuBar.add(settings);
         this.jFrame.getContentPane().add(menuBar);
 
-        this.springLayout.putConstraint(SpringLayout.NORTH, this.chatPage, 10, SpringLayout.SOUTH, this.menuBar);
+        this.springLayout.putConstraint(SpringLayout.NORTH, this.chatPage, 10, SpringLayout.SOUTH, menuBar);
         this.springLayout.putConstraint(SpringLayout.EAST, this.chatPage, -10, SpringLayout.EAST, this.jFrame.getContentPane());
         this.springLayout.putConstraint(SpringLayout.SOUTH, this.chatPage, -10, SpringLayout.SOUTH, this.jFrame.getContentPane());
         this.springLayout.putConstraint(SpringLayout.WEST, this.chatPage, 10, SpringLayout.WEST, this.jFrame.getContentPane());
