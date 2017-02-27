@@ -49,11 +49,11 @@ public class SettingsFile {
         }
 
         if (config == null) {
-            config = new HashMap<String, Object>();
+            config = new HashMap<>();
         }
     }
 
-    public SettingsFile(String folder, String fileName) {
+    SettingsFile(String folder, String fileName) {
         dir = new File(System.getProperty("user.home") + File.separator + "Local Settings" + File.separator + "Application Data" + File.separator + "BubblesBot" + File.separator + Launch.getInstance().getBot().getChannel().getName() + File.separator + folder + File.separator);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -82,11 +82,11 @@ public class SettingsFile {
         }
 
         if (config == null) {
-            config = new HashMap<String, Object>();
+            config = new HashMap<>();
         }
     }
 
-    public SettingsFile(File file) {
+    SettingsFile(File file) {
         this.file = file;
 
         if (!file.exists()) {
@@ -110,7 +110,7 @@ public class SettingsFile {
         }
 
         if (config == null) {
-            config = new HashMap<String, Object>();
+            config = new HashMap<>();
         }
     }
 
@@ -118,11 +118,11 @@ public class SettingsFile {
         return this.file;
     }
 
-    public boolean contains(String key) {
+    boolean contains(String key) {
         return config.containsKey(key);
     }
 
-    public void save() {
+    void save() {
         try {
             yaml.dump(config, new FileWriter(file));
         } catch (IOException e) {
@@ -139,9 +139,7 @@ public class SettingsFile {
     }
 
     public boolean getBoolean(String key) {
-        if (contains(key))
-            return (boolean) this.get(key);
-        else return false;
+        return contains(key) && (boolean) this.get(key);
     }
 
     public Integer getInt(String key) {

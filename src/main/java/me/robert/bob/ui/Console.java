@@ -1,14 +1,9 @@
 package me.robert.bob.ui;
 
-import clojure.lang.Cons;
 import org.jvnet.substance.skin.SubstanceMagmaLookAndFeel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by O3Bubbles09 on 2/14/2017
@@ -26,7 +21,7 @@ public class Console {
     private JScrollPane scrollPane;
     private JTextArea textArea;
 
-    public Console() {
+    Console() {
         this.frame = new JFrame("Console");
 
         this.frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/me.robert.bob.ui/logo.png")));
@@ -70,7 +65,7 @@ public class Console {
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
     }
 
-    public void toggleVisible() {
+    void toggleVisible() {
         this.frame.setVisible(!this.frame.isVisible());
     }
 }

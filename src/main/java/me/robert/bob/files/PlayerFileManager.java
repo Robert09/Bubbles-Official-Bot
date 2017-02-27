@@ -1,8 +1,5 @@
 package me.robert.bob.files;
 
-import me.robert.bob.Launch;
-import me.robert.bob.command.CustomCommand;
-
 import java.io.File;
 import java.util.HashMap;
 

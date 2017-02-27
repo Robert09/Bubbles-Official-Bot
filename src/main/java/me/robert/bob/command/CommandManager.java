@@ -3,10 +3,8 @@ package me.robert.bob.command;
 import me.robert.bob.Launch;
 import me.robert.bob.command.commands.AddCommand;
 import me.robert.bob.command.commands.Points;
-import me.robert.bob.files.CommandFile;
 import me.robert.irc.User;
 
-import javax.print.DocFlavor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

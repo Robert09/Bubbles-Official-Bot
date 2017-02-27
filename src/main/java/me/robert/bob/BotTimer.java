@@ -13,7 +13,7 @@ public class BotTimer extends TimerTask {
 
     private Timer timer;
 
-    public BotTimer(int delay, Bot bot) {
+    BotTimer(int delay, Bot bot) {
         int timeTime = delay * 60 * 1000;
 
         this.timer = new Timer("Bot Timer");

@@ -11,9 +11,13 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by O3Bubbles09 on 2/14/2017
@@ -39,7 +43,7 @@ public class ChatPage extends JPanel {
 
     private JLabel[] viewers;
 
-    public ChatPage() {
+    ChatPage() {
         this.springLayout = new SpringLayout();
         this.scrollPane = new JScrollPane();
         this.textPane = new JTextPane();
@@ -103,61 +107,58 @@ public class ChatPage extends JPanel {
         this.add(this.scrollPane);
     }
 
-    public void joinChannel(String channel) {
+    void joinChannel(String channel) {
         Launch.getInstance().setBot(new Bot(channel));
         Launch.getInstance().getBot().setSettingsFile(new SettingsFile("settings.yaml"));
     }
 
-    public void partChannel() {
+    void partChannel() {
         Launch.getInstance().getBot().getChannel().part();
     }
 
-    public void messageChannel() {
+    private void messageChannel() {
         String message = this.textField.getText();
         this.textField.setText("");
         appendChat(Launch.USER, Color.CYAN, message);
         Launch.getInstance().getBot().getChannel().messageChannel(message);
     }
 
-    public void updateViewers(LinkedList<User> users) {
+    public void updateViewers(List<User> users) {
         this.viewers = new JLabel[Launch.getInstance().getBot().getChannel().getUsers().size()];
 
         for (Component component : this.viewerPanel.getComponents()) {
             this.viewerPanel.remove(component);
         }
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+        SwingUtilities.invokeLater(() -> {
 
-                for (int i = 0; i < Launch.getInstance().getBot().getChannel().getUsers().size(); i++) {
-                    User user = users.get(i);
+            for (int i = 0; i < Launch.getInstance().getBot().getChannel().getUsers().size(); i++) {
+                User user = users.get(i);
 
-                    JLabel temp = new JLabel("");
-                    if (user.isMod()) {
-                        temp.setForeground(user.getColor());
-                        temp.setText("[MOD] " + user.getName());
-                        viewers[i] = temp;
-                        viewerPanel.add(viewers[i]);
-                    } else {
-                        temp.setForeground(user.getColor());
-                        temp.setText(user.getName());
-                        viewers[i] = temp;
-                        viewerPanel.add(viewers[i]);
-                    }
-
-                    viewers[i].addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            onMouseClicked(e);
-                        }
-                    });
-
-                    viewerPanel.validate();
-                    viewerPanel.repaint();
+                JLabel temp = new JLabel("");
+                if (user.isMod()) {
+                    temp.setForeground(user.getColor());
+                    temp.setText("[MOD] " + user.getName());
+                    viewers[i] = temp;
+                    viewerPanel.add(viewers[i]);
+                } else {
+                    temp.setForeground(user.getColor());
+                    temp.setText(user.getName());
+                    viewers[i] = temp;
+                    viewerPanel.add(viewers[i]);
                 }
 
+                viewers[i].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        onMouseClicked(e);
+                    }
+                });
+
+                viewerPanel.validate();
+                viewerPanel.repaint();
             }
+
         });
 
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
@@ -166,8 +167,8 @@ public class ChatPage extends JPanel {
     private String[] commands = new String[]{"", "Ban", "Un-Ban", "Timeout", "Un-Timeout"};
 
     private void onMouseClicked(MouseEvent e) {
-        for (int i = 0; i < this.viewers.length; i++) {
-            if (e.getSource() == this.viewers[i]) {
+        for (JLabel viewer : this.viewers) {
+            if (e.getSource() == viewer) {
 
                 String selectedCmd = (String) JOptionPane.showInputDialog(this,
                         "What action would you like to perform on this user?",
@@ -181,19 +182,19 @@ public class ChatPage extends JPanel {
                     case "":
                         break;
                     case "Ban":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/ban " + this.viewers[i]
+                        Launch.getInstance().getBot().getChannel().messageChannel("/ban " + viewer
                                 .getText());
                         break;
                     case "Un-Ban":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/unban " + this.viewers[i]
+                        Launch.getInstance().getBot().getChannel().messageChannel("/unban " + viewer
                                 .getText());
                         break;
                     case "Timeout":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/timeout " + this.viewers[i]
+                        Launch.getInstance().getBot().getChannel().messageChannel("/timeout " + viewer
                                 .getText());
                         break;
                     case "Un-Timeout":
-                        Launch.getInstance().getBot().getChannel().messageChannel("/untimeout " + this.viewers[i]
+                        Launch.getInstance().getBot().getChannel().messageChannel("/untimeout " + viewer
                                 .getText());
                         break;
                 }

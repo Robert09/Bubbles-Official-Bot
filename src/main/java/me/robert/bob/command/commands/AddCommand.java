@@ -4,8 +4,6 @@ import me.robert.bob.Launch;
 import me.robert.bob.command.Command;
 import me.robert.bob.command.CommandInfo;
 import me.robert.bob.command.CustomCommand;
-import me.robert.bob.files.PlayerFile;
-import me.robert.bob.files.PlayerFileManager;
 import me.robert.irc.User;
 
 /**

@@ -34,7 +34,7 @@ public class Window {
         this.jFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/me.robert.bob.ui/logo.png")));
 
         this.jFrame.getContentPane().setLayout(this.springLayout);
-        this.jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.jFrame.setMinimumSize(size);
         this.jFrame.setLocationRelativeTo(null);
         this.jFrame.pack();

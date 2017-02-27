@@ -5,9 +5,7 @@ import me.robert.bob.files.PlayerFile;
 import me.robert.bob.files.PlayerFileManager;
 import me.robert.bob.files.SettingsFile;
 import me.robert.irc.Connection;
-import me.robert.irc.User;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
