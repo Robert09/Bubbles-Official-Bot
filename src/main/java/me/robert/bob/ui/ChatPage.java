@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 /**
  * Created by O3Bubbles09 on 2/14/2017
@@ -164,11 +163,40 @@ public class ChatPage extends JPanel {
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
     }
 
+    private String[] commands = new String[]{"", "Ban", "Un-Ban", "Timeout", "Un-Timeout"};
+
     private void onMouseClicked(MouseEvent e) {
         for (int i = 0; i < this.viewers.length; i++) {
             if (e.getSource() == this.viewers[i]) {
-                System.out.println(this.viewers[i].getText() + " was pressed!");
-                this.textField.setText(this.textField.getText() + " " + this.viewers[i].getText());
+
+                String selectedCmd = (String) JOptionPane.showInputDialog(this,
+                        "What action would you like to perform on this user?",
+                        "Action to perform",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        commands,
+                        commands[0]);
+
+                switch (selectedCmd) {
+                    case "":
+                        break;
+                    case "Ban":
+                        Launch.getInstance().getBot().getChannel().messageChannel("/ban " + this.viewers[i]
+                                .getText());
+                        break;
+                    case "Un-Ban":
+                        Launch.getInstance().getBot().getChannel().messageChannel("/unban " + this.viewers[i]
+                                .getText());
+                        break;
+                    case "Timeout":
+                        Launch.getInstance().getBot().getChannel().messageChannel("/timeout " + this.viewers[i]
+                                .getText());
+                        break;
+                    case "Un-Timeout":
+                        Launch.getInstance().getBot().getChannel().messageChannel("/untimeout " + this.viewers[i]
+                                .getText());
+                        break;
+                }
             }
         }
     }
